@@ -113,7 +113,7 @@ Professor Jian Zou, Reader:\\[5ex]
 		by Fangzheng Sun\\
 	\end{small}
 \end{center}
-In this thesis, we introduce a novel model based on idea of autoencoders. Slightly different from a classic autoencoder reconstructing its own inputs through a neural network, our model takes advantage of Kernel Canonical Correlation Analysis (KCCA) and reconstructs input data from another data set, where these two data sets should have correlation. Our model extends traditional KCCA in a way that the non-linearity of the data is learned through optimizing a kernel function by a neural network. In one of the novel parts of this thesis, we do not optimize our kernel based upon some prediction error metric, as is classic in autoencoders. Rather, we optimize our kernel to maximize the ``coherence'' of the underlying low-dimensional hidden layers. This idea makes our method faithful to the classic interpretation of linear Canonical Correlation Analysis (CCA). 
+In this thesis, we introduce a novel model based on idea of autoencoders. Different from a classic autoencoder reconstructing its own inputs through a neural network, our model learns an idea from Kernel Canonical Correlation Analysis (KCCA) and reconstructs input data from another data set, where these two data sets should have correlation. Our model extends traditional KCCA in a way that the non-linearity of the data is learned through optimizing a kernel function by a neural network. In one of the novel parts of this thesis, we do not optimize our kernel based upon some prediction error metric, as is classic in autoencoders. Rather, we optimize our kernel to maximize the ``coherence'' of the underlying low-dimensional hidden layers. This idea makes our method faithful to the classic interpretation of linear Canonical Correlation Analysis (CCA). 
 As far we are aware, our method, which we call a \textit{Kernel Coherence Encoder (KCE)},  is the only extent approach that uses the flexibility of a neural network, while maintaining the theoretical properties of classic KCCA. In another one of the novelties of our approach, we leverage a modified version of classic coherence which is far more stable in the presence of high-dimensional data to solve computational and robustness issues in the implementation of a coherence based deep learning KCCA.
 
 \clearpage
@@ -587,6 +587,7 @@ We get the covariance matrix $R_{zz}$ by 2.13 and get the canonical variables $u
 The decoder phase of the KCE shares exactly the same structure with the decoder phases of the other two models. 
 
 \chapter{Numerical Results}
+In this chapter, we demonstrate the effectiveness of our proposed models using the well-known image recognition MNIST data set. With some proper quantitative metrics, we will evaluate the reconstruction images from NCE, CE and KCE. 
 \section{Data Sets}
 MNIST data set\cite{MNIST} is a classical data set widely used for machine learning and deep learning study, especially in image processing and pattern recognition problems. With feature data (pixel values of images) and labels provided, it can be used for both supervised and unsupervised learning. The data set contains 55000 images for training and 10000 images for testing. Each image is a $28 \times 28$ pixel picture of a human hand-written digit (0-9) one 0-to-1-gray-scale canvas with pure black background (pixel value 0.0) and pure white writing (pixel value 1.0).
 \begin{figure}[H]
@@ -596,8 +597,9 @@ MNIST data set\cite{MNIST} is a classical data set widely used for machine learn
 	\label{fig:1}
 \end{figure}
 
-To fit our model design, we need a pair of data sets with some correlations in between. Our strategy is to cut each image (784 pixels) to upper and lower parts with equal sizes ($28 \times 14$), as shown in Figure 4.2. The upper parts of the images are $x$, and the lower parts of the images are $y$. In this circumstance, $x$ and $y$ are correlated because their features are potentially predictable from one to another. (A human reader will somehow be able to imagine what the other part of a hand-writing 7 or 4 or other digits looks like by looking at one part)\\
-Note that given the labels provided by MNIST data indicating which number each image refers to, we group the images by their labels so that each group contains images corresponding to only one digit. We run our model for each group instead of running all images together. In this case, there will be greater correlation between two parts of an image because the patterns for a single digit are close even though they come from different writings.
+To fit our model design, we need a pair of data sets with some correlations in between. Our strategy is to cut each image (784 pixels) to upper and lower parts with equal sizes ($28 \times 14$), as shown in Figure 4.2. \\
+The upper parts of the images are $x$, and the lower parts of the images are $y$. In this circumstance, $x$ and $y$ are correlated because their features are potentially predictable from one to another. (A human reader will somehow be able to imagine what the other part of a hand-writing 7 or 4 or other digits looks like by looking at one part)\\
+Note that given the labels provided by MNIST data indicating which number each image refers to, we group the images by their labels so that each group contains images corresponding to only one digit. We test our model for each group separately. In this case, there will be greater correlation between two parts of an image because the patterns for a single digit are close even though they come from different writings.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.8]{pictures/MNIST_up.png}
@@ -607,7 +609,7 @@ Note that given the labels provided by MNIST data indicating which number each i
 \end{figure}
 Based on experimental results, we set the dimension $k=10$ for Principal Component Analysis because the first 10 principal components explain more than 90\% variance of the original image data.
 
-\section{Training Algorithm}
+\section{Implementation Detail}
 \subsection{TensorFlow}
 TensorFlow\cite{TF,TF2} is an open source software library for numerical computation using data flow graphs, a machine learning system that operates at large scale and in heterogeneous environments. Nodes in the graph represent mathematical operations, while the graph edges represent the multidimensional data arrays (tensors) communicated between them. In TensorFlow, developers have the options among deploying computations to one or more CPUs or GPUs in a desktop, server, or mobile device with a single API. TensorFlow was originally developed by researchers and engineers working on the Google Brain Team within Google's Machine Intelligence research organization for the purposes of conducting machine learning and deep neural networks research, but recently this system becomes open to all developers around the world and broadens its range to a wider variety of domains. This architecture gives flexibility to the application developer: whereas in previous “parameter server” designs the management of shared state is built into the system, TensorFlow enables developers to experiment with novel optimizations and training algorithms. \\
 \begin{figure}[H]
@@ -616,10 +618,10 @@ TensorFlow\cite{TF,TF2} is an open source software library for numerical computa
 	\caption{A schematic TensorFlow dataflow graph for a training pipeline, containing subgraphs for reading input data, preprocessing, training, and checkpointing state\cite{TFPIC}.}
 	\label{fig:3}
 \end{figure}
-Based on its great flexibility and programming efficiency, we choose TensorFlow as the tool to implement all training sessions in our model. 
+Based on its great flexibility and programming efficiency, our models are implemented on TensorFlow. 
 
 \subsection{Gradient Descent Optimization}
-Gradient descent optimization\cite{GDO} is one of the most popular algorithms to perform optimization and by far the most common way to optimize artificial neural networks. In chapter 3, we mentioned several deep learning training processes, a kernel function optimization training $\kappa$ (3.15), canonical variable to principal component mappings $\gamma$ (3.1) and the encoders $\mathcal{E}$ (3.4). Since we choose to apply Tensorflow as the implementation tool, here we briefly introduce one of its variants, batch gradient descent which is used by TensorFlow class \textit{tf.train.GradientDescentOptimizer}\cite{TFGDO}, to help explain our training algorithm. In code, batch gradient descent looks something like this:
+Gradient descent optimization\cite{GDO} is one of the most popular algorithms to perform optimization and by far the most common way to optimize artificial neural networks. In chapter 3, we mentioned a kernel function optimization training $\kappa$ (3.15), canonical variable to principal component mappings $\gamma$ (3.1) and the encoders $\mathcal{E}$ (3.4). These training processes are implemented by the tool TensorFlow. Here we briefly introduce one of the variants of gradient descent, batch gradient descent, which is applied by TensorFlow class \textit{tf.train.GradientDescentOptimizer}\cite{TFGDO}, to help explain our training algorithm. In code, batch gradient descent looks something like this:
 \begin{equation}
 \begin{split}
 &for\ i\ in\ range ( \#\ epochs ): \\
@@ -659,8 +661,8 @@ We set the below training parameters for all training processes in the three mod
 From earlier experiments, we found these parameters would ensure that all the steps can be well trained. For fair comparison, we keep these parameters consistent all the time.
 
 \section{Evaluation Metrics}
-To evaluate the reconstruction results, we need to specify one or multiple metrics. For image data, for example, the most direct way to check reconstruction performance is to convert the output data back to original canvas size and print the image with reshaped data. Then we can evaluate the reconstruction visually by comparing the reconstruction image with original image. Usually this is a very effective approach. However, it is not guaranteed that human eyes are able to identify all trivial differences between two images, and it is hard to claim which model works better if two models output similar reconstruction images, or demonstrate visually indistinguishable levels of performance. Thus it is necessary to introduce some quantitative measures. \\
-Our purpose here is to compare the reconstructed image data and original image data by quantifying the error, the distance or the similarity between them. This is very equivalent to the Image Similarity Analysis\cite{PCC,CC,ISA}. We decide to apply 5 different metrics: $L^2$-norm, Pearson Correlation score, cross-correlation, Bhattacharyya distance and Fast Fourier Transform (FFT) rank.
+To evaluate the reconstruction results, we specify multiple metrics. For image data, for example, the most direct way to check reconstruction performance is to convert the output data back to original canvas size and print the image with reshaped data. Then we can evaluate the reconstruction visually by comparing the reconstruction image with original image. Usually this is a very effective approach. However, it is not guaranteed that human eyes are able to identify all trivial differences between two images, and it is hard to claim which model works better if two models output similar reconstruction images, or demonstrate visually indistinguishable levels of performance. Thus it is necessary to introduce some quantitative measures. \\
+Our purpose here is to compare the reconstructed image data and original image data by quantifying the error, the distance or the similarity between them. This is equivalent to the Image Similarity Analysis\cite{PCC,CC,ISA}. We apply 5 different metrics: $L^2$-norm\cite{NORM}, Pearson Correlation score\cite{PCC}, cross-correlation\cite{CC}, Bhattacharyya distance\cite{ISA} and Fast Fourier Transform (FFT) rank\cite{ISA}.
 
 \subsection{$L^2$-Norm}
 For real vectors $x=[x_1,x_2,...x_n]$, $L^2$-Norm\cite{NORM} is given by
@@ -677,15 +679,15 @@ The $L^2$-Norm is also known as the Euclidean norm because it measures the dista
 Note that $L^2$-Norm works for data as vectors. After reshaping the data to matrix form, the measure turns to Frobenius norm\cite{NORM}. But the result will not change.
 
 \subsection{Pearson Correlation Score}
-Pearson Correlation Coefficient\cite{PCC, PCC2} is a measure of the linear correlation between two variables $x$ and $y$. It has a value between +1 and −1, where 1 is total positive linear correlation, 0 is no linear correlation, and −1 is total negative linear correlation. This metric measures how highly correlated are two variables and is measured from -1 to +1. A Pearson Correlation Coefficient of 1 indicates that the data objects are perfectly correlated but in this case, a score of -1 means that the data objects are not correlated. In other words, the Pearson Correlation score quantifies how well two data objects fit a line. \\
-In essence, the Pearson Correlation score finds the ratio between the covariance and the standard deviation of both objects. In our case, we calculate the Pearson Correlation score between $x$ and $x'$, $y$ and $y'$ to demonstrate how correlated they are:
+Pearson Correlation Coefficient\cite{PCC, PCC2} is a measure of the linear correlation between two variables $x$ and $y$. It has a value between -1 and +1, where 1 indicates total positive linear correlation, 0 is no linear correlation, and −1 is total negative linear correlation. Accordingly, Pearson Correlation score measures how highly correlated are two variables. A score of 1 indicates that the data objects are perfectly correlated but in this case, a score of -1 means that the data objects are not correlated. In other words, the Pearson Correlation score quantifies how well two data objects fit a line. \\
+In essence, the Pearson Correlation score finds the ratio between the covariance and the standard deviation of both objects. In our case, we calculate the Pearson Correlation score between $x$ and $x'$, $y$ and $y'$ as the following:
 \begin{equation}
 \begin{split}
 &Pearson(x,x')= \dfrac{\sum xx'-\dfrac{\sum x \sum x'}{n}}{\sqrt{(\sum x^2-\dfrac{(\sum x)^2}{n})(\sum x'^2-\dfrac{(\sum x')^2}{n})}}\\
 &Pearson(y,y')= \dfrac{\sum yy'-\dfrac{\sum y \sum y'}{n}}{\sqrt{(\sum y^2-\dfrac{(\sum y)^2}{n})(\sum y'^2-\dfrac{(\sum y')^2}{n})}}
 \end{split}
 \end{equation}
-A larger Pearson Correlation score means a larger correlation between original data and reconstructed data. Since the model generates data in the same scale with input data, a larger Pearson Correlation score here refers to greater similarity, thus better reconstruction result.
+Since the model generates data in the same scale with input data, a larger Pearson Correlation score here refers to greater similarity, thus better reconstruction result.
 
 \subsection{Cross-correlation}
 In signal processing, cross-correlation\cite{CC} is a measure of similarity of two series as a function of the displacement of one relative to the other. This measure has been used in medical image registration. For 1-dimensional data, this approach is essentially same as Pearson correlation coefficient score method:
@@ -829,11 +831,11 @@ In general, from the statistics provided in the tables, no matter compared with 
 
 \chapter{Conclusion}
 \section{Contribution}
-In this thesis research, we build three models for reconstruction task where the KCE model demonstrates the best performance. Given two potentially correlated high-dimensional data sets, KCE successfully build a map between the two data sets. Thus we can reconstruct one data set by the other and their mutual information. During the research, we first learn and explore CCA. However, we find its limitation on high dimensional data from several experiments. So we apply kernel methods. With the help of Mercer's theorem and Schoenberg's theorem, we choose the proper kernel function that can map data to RKHS. In the training processes that maps canonical variables to the original feature space of another data set, we try both linear and non-linear ANNs and figure out that a linear ANN before PCA reconstruction and a non-linear ANN after PCA reconstruction best fit our demand. In MNIST experiment, our model solves the ``black-to-white" mapping error problem for gray-scale image reconstruction. Meanwhile, we prove the effectiveness of KCCA in the paired reconstruction task.
+In this research, we propose three models to find complex correlations between two variables and KCE model demonstrates the best performance on a high dimensional image reconstruction task. Given two potentially correlated high-dimensional data sets, KCE successfully build a map between the two data sets. Thus we can reconstruct one data set by the other and their mutual information. Our research starts with exploration on the limitation of CCA on high dimensional data through several experiments. In addition, with the help of Mercer's theorem and Schoenberg's theorem, we improve CCA by introducing kernel methods that map data to RKHS and improve the coherence calculation. In the processes of mapping canonical variables to the original feature space of another data set, we try both linear and non-linear ANNs and figure out that a linear ANN before PCA reconstruction and a non-linear ANN after PCA reconstruction best fit our demand. Our model solves the ``black-to-white" mapping error problem for gray-scale image reconstruction. Meanwhile, we prove the effectiveness of KCCA in the paired reconstruction task.
 
 \section{Future Work}
 We propose three directions of the future work:\\
-First, the reconstruction results of our KCE are still far from perfect and need to be improved. We believe that during the PCA and PCA reconstruction, some information of original data get lost. On the one hand, we need to prove this claim. On the other hand, we should rethink about the dimensionality trade-off for better reconstruction results.\\
+First, we believe that during the PCA projection, some information of original data gets lost. We will run more experiments to explore the dimensionality trade-off for better reconstruction results.\\
 Second, we have observed that our model is able to avoid the ``black-to-white" mapping error problem. It is worth for us to dig out the reason and continue to produce a mathematical proof for this.\\
 Third, so far we have only done the experiments on MNIST data. We should explore more samples including face images, item images or even other types of data to justify the effectiveness of our model.
 
