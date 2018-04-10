@@ -120,16 +120,16 @@ In this thesis, we introduce a novel model based on the idea of autoencoders. Di
 \clearpage
 
 \chapter{Introduction}
-In the recent years, the concept of deep learning\cite{DL} is becoming a hot topic for divergent industries as well as multiple fields of study\cite{AUKM,TF,PR,DLRG}. Deep learning is a subfield of machine learning and there are many sub-categories of deep learning itself. Herein, we focus on artificial neural networks (ANN)\cite{NN,NN2} and autoencoders\cite{AE,AE2,AE3} that allow us to discover non-linear low-dimensional manifolds. Such methods are frequently used for unsupervised learning and for producing low-dimensional representations of data. Typically, an autoencoder consists two parts, an encoding phase (encoder) \(E(\cdot)\) and an decoding phase (decoder) \(D(\cdot)\). The encoder \(E(\cdot)\) takes the input data and maps it to a low-dimensional representation. The decoder \(D(\cdot)\) then takes this low-dimensional representation and attempt to reconstruct the original high-dimensional data.
+In the recent years, the concept of deep learning\cite{DL} is becoming a hot topic for divergent industries as well as multiple fields of study\cite{AUKM,TF,PR,DLRG}. Deep learning is a subfield of machine learning and there are many sub-categories of deep learning itself. Herein, we focus on artificial neural networks (ANN)\cite{NN,NN2} and autoencoders\cite{AE,AE2,AE3} that allow us to discover non-linear low-dimensional manifolds. Such methods are frequently used for unsupervised learning and for producing low-dimensional representations of data. Typically, an autoencoder consists two parts, an encoding phase (encoder) \(E(\cdot)\) and a decoding phase (decoder) \(D(\cdot)\). The encoder \(E(\cdot)\) takes the input data and maps it to a low-dimensional representation. The decoder \(D(\cdot)\) then takes this low-dimensional representation and attempts to reconstruct the original high-dimensional data.
 
 Note, such an autoencoder is closely related to Principal Component Analysis (PCA)\cite{PCA,PCA2,STAT,KPCA}. In fact, an autoencoder is identical to PCA when each layer is assumed to be linear and the reconstruction cost function is Euclidean distance. In particular, many people are attracted by the nonlinear aspect of autoencoders, which makes it more powerful than PCA, and effective in solving real-life problems.
 
-We create three novel models to leverage the full power of the autoencoders. Our first model, a Non-Coherence Encoder (NCE), is built upon both linear and non-linear autoencoders. Then we move on to CCA\cite{CCA,ECCA} and KCCA\cite{KCCA}, merging their strengths with the autoencoder approach in another two proposed models, namely the Coherence Encoder (CE) and the Kernel Coherence Encoder (KCE). When we test their performance using the MNIST\cite{MNIST} digit image data set, we find that with these novel generalizations of CCA, especially KCCA, the prediction of images tend to be closer to the true images. 
+We create three novel models to leverage the full power of the autoencoders. Our first model, a Non-Coherence Encoder (NCE), is built upon both linear and non-linear autoencoders. Then we move on to CCA\cite{CCA,ECCA} and KCCA\cite{KCCA}, merging their strengths with the autoencoder approach in another two proposed models, namely the Coherence Encoder (CE) and the Kernel Coherence Encoder (KCE). When we test their performance using the MNIST\cite{MNIST} digit image data set, we find that with these novel generalizations of CCA, especially KCCA, the predictions of images tend to be closer to the true images. 
 
 \section{Motivation}
 Let us begin the story of our research with some interesting questions one may have: at the age of 20, can you predict how you will look at the age of 40? Or, when you look at a 40-year-old person, can you imagine what he or she looks like at the age of 20? A human brain, based on visual observations, learns and finds a ``mapping" between a 20-year-old face and a 40-year-old face. Consequently, people might be able to give reasonable answers to the above questions.
 
-We want our models to mimic this learning process while maintaining its own ability to extract the ``dependencies" between data sets. Our purpose is to reconstruct two ``potentially dependent datasets" from each other. A classic autoencoder focuses on one input data set. However, we are interested in working with two correlated data sets and therefore we introduce CCA and even further its kernel version KCCA to extract the dependencies between them. 
+We want our model to mimic this learning process while maintaining its own ability to extract the ``dependencies" between data sets. Our purpose is to reconstruct two ``potentially dependent datasets" from each other. A classic autoencoder focuses on one input data set. However, we are interested in working with two dependent data sets and therefore we introduce CCA and even further its kernel version KCCA to extract the dependencies between them. 
 
 The earliest idea, of which we are aware, of applying kernel methods to autoencoders comes from Yan Pei's work \textit{Auto-encoder Using Kernel Methods}\cite{AUKM}. In his model, the author replaces the encoder part of an autoencoder with Kernel PCA (KPCA)\cite{KPCA} and the decoder with kernel-based linear regression. It is a model that is designed to work similarly to an autoencoder, but remains faithful to the ``kernel trick''. The ``kernel trick'', which will be discussed in detail in the next Chapter, is a classic technique for non-linearly projecting features to a high-dimensional space, gaining the benefit of complex non-linear features, without incurring the cost of working directly in a high-dimensional space. Although it is reasonable, and perhaps even obvious, to try to connect the kernel trick and deep learning, it is notable that, as far as we are aware, the current methods such as \cite{AUKM}, do not leverage the full power of autoencoders.
 
@@ -138,7 +138,7 @@ NCE is our model that is least faithful to the kernel trick and is built on two 
 
 Our improvements to the NCE model are inspired by CCA through \textit{Empirical canonical correlation analysis in subspaces}\cite{ECCA}. This paper provides detailed explanations of CCA, including the calculations for canonical variables of data pairs. In particular, we are inspired by the authors' idea to maximize their coherence through CCA. CCA and PCA differ in that PCA attempts to reconstruct a set of data from itself, while CCA has two data sets, and it tries to reconstruct one data set from the other. It is this added complexity of having two data sets that make our proposed model non-trivial to develop.
 
-However, in most real-life problems, the correlations of the data sets are not necessarily linear, thus calculating their linear coherence may not be the best solution to extract their dependencies. We take a further step by analyzing CCA's kernel version, KCCA. With the help of deep learning, we developed a kernel function with a set of hyperparameters and train the kernel function to maximize the coherence of two data sets in the high-dimensional space. Then we extract the canonical variables for data reconstruction.
+However, in most real-life problems, the correlations of the data sets are not necessarily linear, thus calculating their linear coherence may not be the best solution to extract their dependencies. We take a further step by analyzing CCA's kernel version, KCCA. With the help of deep learning, we develop a kernel function with a set of hyperparameters and train the kernel function to maximize the coherence of two data sets in the high-dimensional space. Then we extract the canonical variables for data reconstruction.
 
 In another two models, CE and KCE, we take advantage of CCA and KCCA respectively. While CE rests upon the combination of linear CCA and autoencoders, in KCE we extend the traditional CCA from linear to non-linear by kernel methods and increase the performance of CCA in a similar way by leveraging the non-linear capabilities of autoencoders.
 
@@ -148,18 +148,17 @@ Notably, we solve two problems caused by high dimensionality of data. First, the
 
 In the next step, we accomplish the reconstruction by using both linear and non-linear neural networks and PCA reconstruction to map the principal components back to the original space of another data set. 
 
-Using the MNIST digit image data experiment, we test the performance of NCE, CE, and KCE separately and then compare their reconstruction results with each other. The reconstruction images demonstrate a great visitable advantage of the latter two models over NCE. On the other hand, multiple quantitative metrics support the claim that our novel KCE generates better reconstruction images than CE does. 
+Using the MNIST digit image data experiment, we test the performance of NCE, CE, and KCE separately and then compare their reconstruction results with each other. The reconstruction images demonstrate a great visible advantage of the latter two models over NCE. On the other hand, supported by multiple quantitative metrics, we claim that KCE generates better reconstruction images than CE does. 
 
 \chapter{Background}
 In this Chapter, we will introduce the necessary background that forms our ideas and algorithms. First, we will cover deep learning and autoencoders. Our model is based on these ideas and inspired by the exploration of them. In our model, a deep learning approach is used to train the kernel function and to build linear and non-linear mapping processes in the decoder phase, which is very close to a classic autoencoder. 
-Then, we give a detailed explanation as well as theoretical support for our encoder phase, the most significant novelty for our model. In particular, our encoder is quite different than a classic autoencoder. We will start from classical linear CCA and extend to kernel methods (by defining the kernel trick) and then proceed to nonlinear KCCA. Here we provide definitions and fundamental theorems used in our model and their theoretical background. Meanwhile, we will introduce the concept of coherence, the metric used by our model to optimize the kernel function. 
+Then, we give a detailed explanation as well as theoretical support for our encoder phase, the most significant novelty for our model. In particular, our encoder is quite different from a classic autoencoder. We will start from classical linear CCA and extend to kernel methods (by defining the kernel trick) and then proceed to nonlinear KCCA. Here we provide definitions and fundamental theorems used in our model and their theoretical background. Meanwhile, we will introduce the concept of coherence, the metric used by our model to optimize the kernel function. 
 As we mentioned, we apply PCA to the original data set to avoid the dimensionality issue and improve computational efficiency. Thus we also cover the dimension reduction algorithm PCA at the end of this chapter. 
 
 \section{Deep Learning}
-Our introduction to deep learning closely follow the definitions provided by \cite{DL}. Deep learning is a class of machine learning techniques that exploit many layers of non-linear information processing for supervised algorithms, such as pattern analysis and classification. It is a sub-field within machine learning that is based on algorithms for learning multiple levels of representation in order to model complex relationships among data. An observation (e.g., an image) can be represented in many ways (e.g., a vector of pixels), but some representations make it easier to learn tasks of interest (e.g.,
-is this the image of a human face?) from examples, and research in this area attempts to define what makes better representations and how to learn them\cite{DL}. In this Section, we will focus on a narrower, but now commercially important, a subfield of Deep Learning called artificial neural networks (ANN).
+Our introduction to deep learning closely follows the definitions provided by \cite{DL}. Deep learning is a class of machine learning techniques that exploit many layers of non-linear information processing for supervised algorithms, such as pattern analysis and classification. It is a sub-field within machine learning that is based on algorithms for learning multiple levels of representation in order to model complex relationships among data. An observation (e.g., an image) can be represented in many ways (e.g., a vector of pixels), but some representations make it easier to learn tasks of interest from examples, and research in this area attempts to define what makes better representations and how to learn them\cite{DL}. In this Section, we will focus on a narrower, but now commercially important, subfield of Deep Learning called artificial neural networks (ANN).
 
-\cite{NN} provides us a standardized definition for ANN: For A standard ANN consists of many simple, connected processors called neurons, each producing a sequence of real-valued activations. Input neurons get activated through sensors perceiving the environment, and other neurons get activated through weighted connections from previously active neurons. We follow the detailed notations in \cite{NN2} to explain this algorithm: an ANN consists of an input layer of neurons (or nodes, units), one or two (or even three) hidden layers of neurons, and a final layer of output neurons. Figure 2.1 shows a typical architecture of a neural network, where lines connecting neurons are also shown. Each connection is associated with a numeric number called weight. The output, $h_{i}$, of neuron $i$ in the hidden layer, is
+\cite{NN} gives us a standardized definition for ANN: For A standard ANN consists of many simple, connected processors called neurons, each producing a sequence of real-valued activations. Input neurons get activated through sensors perceiving the environment, and other neurons get activated through weighted connections from previously active neurons. We follow the detailed notations in \cite{NN2} to explain this algorithm: an ANN consists of an input layer of neurons (or nodes, units), one or two (or even three) hidden layers of neurons, and a final layer of output neurons. Figure 2.1 shows a typical architecture of a neural network, where lines connecting neurons are also shown. Each connection is associated with a numeric number called weight. The output, $h_{i}$, of neuron $i$ in the hidden layer, is
 \begin{equation}
 h_{i}=\sigma(\sum _{j=1}^{N}V_{ij}x_{j}+T_{i}^{hid})
 \end{equation}
@@ -176,10 +175,10 @@ where $W$ is the weight matrix and $b$ is the bias vector.
 \end{figure}
 
 \subsection{Weight Matrix and Bias Vector}
-In the inner formula of each neuron $h=\sigma(Wx+b)$, we have two network parameters $W$ and $b$ inside the activation function $\sigma()$. They are the weight matrix and bias vector respectively. Each layer (neuron) has its own weight matrix and bias vector. For a neural networks with $n$ layers, we have in total $n$ pairs of such parameters, $[W^1, W^2,...,W^n]$ and $[b^1,b^2,...,b^n]$. The dimensions of each $W^i$ and $b^i$ are determined by the dimensions of the input and output values in each layer. For example, suppose the input \(x\in \mathbb{R}^{d}\) and the layer maps it to \(h\in \mathbb{R}^{p}\). In this case, the weight matrix $W^i$ functions to map data from $\mathbb{R}^{d}$ to $\mathbb{R}^{p}$, so it is a $p \times d$ matrix. The bias vector $b^i$ is a vector with length $p$.
+In the inner formula of each neuron $h=\sigma(Wx+b)$, we have two network parameters $W$ and $b$ inside the activation function $\sigma()$. They are the weight matrix and bias vector respectively. Each layer (neuron) has its own weight matrix and bias vector. For a neural networks with $n$ layers, we have in total $n$ pairs of such parameters, $[W_1, W_2,...,W_n]$ and $[b_1,b_2,...,b_n]$. The dimensions of each $W_i$ and $b_i$ are determined by the dimensions of the input and output values in each layer. For example, suppose the input \(x\in \mathbb{R}^{d}\) and the layer maps it to \(h\in \mathbb{R}^{p}\). In this case, the weight matrix $W_i$ functions to map data from $\mathbb{R}^{d}$ to $\mathbb{R}^{p}$, so it is a $p \times d$ matrix. The bias vector $b_i$ is a vector with length $p$.
 
 \subsection{Non-linear Activation Function}
-If we apply the two linear projection functions $h=W^1x+b^1$ and $z'=W^2x+b^2$ and the cost function is Euclidean distance $\norm{x-x'}_2$, this two-layer neural network is identical to the PCA. However, many people are attracted by the nonlinear aspect of the autoencoders, which makes it effective in solving real-life problems.
+If we apply the two linear projection functions $h=W_1x+b_1$ and $x'=W_2h+b_2$ and the cost function is Euclidean distance $\norm{x-x'}_2$, this two-layer neural network is identical to the PCA. However, many people are attracted by the nonlinear aspect of the autoencoders, which makes it effective in solving real-life problems.
 
 To introduce non-linearity into an ANN, we apply element-wise non-linear functions such as a sigmoid function or a rectified linear unit after linear projections. The non-linear function in each neuron is $h= f(Wx + b)$ where the non-linear mapping $f$ acts as the activation function. The commonest activation function is sigmoid function $f(t)=\dfrac{1}{1+e^{-t}}$. We use $\sigma()$ to represent this sigmoid function. Thus each layer within an ANN consists a function \(h=\sigma(Wx+b)\), taking input \(x\in \mathbb{R}^{d}\) and mapping it to \(z\in \mathbb{R}^{p}\).
 \begin{figure}[H]
@@ -191,7 +190,7 @@ To introduce non-linearity into an ANN, we apply element-wise non-linear functio
 
 
 \section{Autoencoders}
-An autoencoder is an artificial neural network used for unsupervised learning of efficient codings. The aim of an autoencoder is to learn a representation (encoding) for a set of data, typically for the purpose of dimensionality reduction. Autoencoders are simple learning circuits which aim to transform inputs into outputs with the least possible amount of distortion. While conceptually simple, they play an important role in machine learning. Recently, autoencoders have taken center stage again in the “deep architecture” approach and this concept has become more widely used for learning generative models of data\cite{AE, AE3}.
+An autoencoder is an artificial neural network used for unsupervised learning of efficient codings. The aim of an autoencoder is to learn a representation (encoding) for a set of data, typically for the purpose of dimensionality reduction. Autoencoders are simple learning circuits which aim to transform inputs into outputs with the least possible amount of distortion. While conceptually simple, they play an important role in machine learning. Recently, autoencoders have taken center stage in the “deep architecture” approach and this concept has become more widely used for learning generative models of data\cite{AE, AE3}.
 
 \begin{figure}[H]
 	\centering
@@ -199,9 +198,9 @@ An autoencoder is an artificial neural network used for unsupervised learning of
 	\caption{Schematic structure of an autoencoder with 3 fully-connected hidden layers\cite{AEPIC}.}
 	\label{fig:3}
 \end{figure}
-Typically, an autoencoder consists two parts, an encoding phase (encoder) \(E(\cdot)\) and an decoding phase (decoder) \(D(\cdot)\). The encoder \(E(\cdot)\) receives input data and outputs mid-layer-data, which acts as the input data for the decoder \(D(\cdot)\). The decoder maps the mid-layer-data back to the original feature space. The encoder and decoder can be comprised of single layer or multiple layers, each layer with a function \(z=\sigma(Wx+b)\) mapping \(x\in \mathbb{R}^{d}\) to \(z\in \mathbb{R}^{p}\).  \(\sigma\) is an element-wise activation function such as a sigmoid function or a rectified linear unit. A typical autoencoder structure is shown as following:
+Typically, an autoencoder consists two parts, an encoding phase (encoder) \(E(\cdot)\) and an decoding phase (decoder) \(D(\cdot)\). The encoder \(E(\cdot)\) receives input data and outputs mid-layer-data, which acts as the input data for the decoder \(D(\cdot)\). The decoder maps the mid-layer-data back to the original feature space. The encoder and decoder can be comprised of single layer or multiple layers, each layer with a function \(z=\sigma(Wx+b)\) mapping \(x\in \mathbb{R}^{d}\) to \(z\in \mathbb{R}^{p}\).  \(\sigma\) is an element-wise activation function such as a sigmoid function or a rectified linear unit. 
 
-When there is one hidden layer, the encoder stage of an autoencoder maps \(x\in \mathbb{R}^{d}=\mathcal{X}\) to \(z\in \mathbb{R}^{p}=\mathcal{F}\) ($z$ is hidden layer, for this simplest case, it is also the mid-layer of the whole autoencoder). The encoder \(E(\cdot)\) and the decoder \(D(\cdot)\) can be defined as transitions $\phi$ and $\psi$,
+In a typical autoencoder, when there is one hidden layer, the encoder stage of an autoencoder maps \(x\in \mathbb{R}^{d}=\mathcal{X}\) to \(z\in \mathbb{R}^{p}=\mathcal{F}\) ($z$ is hidden layer, for this simplest case, it is also the mid-layer of the whole autoencoder). The encoder \(E(\cdot)\) and the decoder \(D(\cdot)\) can be defined as transitions $\phi$ and $\psi$,
 \begin{equation}
 \begin{split}
 & \phi:\mathcal{X}\to\mathcal{F} \\
@@ -213,7 +212,7 @@ This can be written as
 \begin{equation}
 z=\sigma(Wx+b)
 \end{equation}
-Here, $\sigma()$ is an element-wise activation function such as a sigmoid function or a rectified linear unit. $W$ is a weight matrix and $b$ is a bias vector. The decoder stage of the autoencoder maps $z$ to the reconstruction $x'$  of the same shape and in the same dimension with original data $x$:
+The decoder stage of the autoencoder maps $z$ to the reconstruction $x'$  of the same shape and in the same dimension with original data $x$:
 \begin{equation}
 x'=\sigma'(W'z+b')
 \end{equation}
@@ -225,7 +224,7 @@ In the training process, autoencoders are usually trained to minimize reconstruc
 where $x$ is usually averaged over some input training set\cite{AE}.
 
 \section{Canonical Correlation Analysis}
-In statistics, Canonical Correlation Analysis (CCA) is a way of inferring information from cross-covariance matrices. If we have two vectors \(X = (X_{1}, ..., X_{n})\) and \(Y = (Y_{1}, ..., Y_{m})\) of random variables, and there are correlations among the variables, then CCA will find linear combinations of the $X_{i}$ and $Y_{j}$ which have maximum correlation with each other\cite{CCA}. In this Section, we are inspired by, and closely follow the notation and derivations, that can be found in Pezeshki and Scharf 2004\cite{ECCA}.
+In statistics, Canonical Correlation Analysis (CCA) is a way of inferring information from cross-covariance matrices. If we have two vectors \(X = (X_{1}, ..., X_{n})\) and \(Y = (Y_{1}, ..., Y_{m})\) of random variables, and there are correlations among the variables, then CCA will find linear combinations of the $X_{i}$ and $Y_{j}$ which have maximum correlation with each other\cite{CCA}. In this Section, we are inspired by, and closely follow the notation and derivations, that can be found in \textit{Pezeshki and Scharf, 2004}\cite{ECCA}.
 
 Consider two random vectors $x\in \mathbb{R}^{m}$ and $y\in \mathbb{R}^{n}$. Let $z= \begin{bmatrix}x^T & y^T\end{bmatrix}^T \in \mathbb{R}^{m+n}$. We assume that x and y have zero means and share the nonsingular composite covariance matrix
 \begin{equation}
@@ -259,7 +258,7 @@ u=F^TR_{xx}^{-1/2}x,\quad v=G^TR_{yy}^{-T/2}y
 \end{equation}
 The standard measure of linear dependence for the composite vector is the Hadamard ratio where the ratio takes the value 0 if and only if there is linear dependence among the elements of the composite vector and takes the value 1 if and only if elements of the composite vector are mutually uncorrelated. 
 
-In the paper Pezeshki and Scharf 2004\cite{ECCA}, the author made a decomposition of the Hadamard ratio and derived the following term
+In \cite{ECCA}, the authors make a decomposition of the Hadamard ratio and derived the following term
 \begin{equation}
 L=det(I-\Sigma\Sigma^T)=\prod_{i=1}^{m}(1-\sigma_{i}^2);\quad 0\leq L\leq 1
 \end{equation}
@@ -288,7 +287,7 @@ In KPCA or KCCA, a kernel function maps data from original space to an inner pro
 \subsection{Mercer's Theorem}
 To explore a kernel function $K$ without the explicit representation for $\varphi$, we apply Mercer's theorem: an implicitly defined function $\varphi$ exists whenever space $\mathcal {X}$ can be equipped with a suitable measure ensuring the function $K$ satisfies Mercer's condition.
 
-In mathematics, specifically functional analysis, Mercer's theorem is a representation of a symmetric positive definite function on a square as a sum of a convergent sequence of product functions.\cite{MT}. To explain Mercer's theorem, we first consider an important special case; see below for a more general formulation. A kernel, in this context, is a symmetric continuous function
+In mathematics, specifically functional analysis, Mercer's theorem is a representation of a symmetric positive definite function on a square as a sum of a convergent sequence of product functions\cite{MT}. A kernel, in this context, is a symmetric continuous function
 \begin{equation}
 K:[a,b] \times [a,b] \rightarrow \mathbb {R}
 \end{equation}
@@ -299,7 +298,7 @@ K is said to be non-negative definite (or positive semidefinite) if and only if
 \end{equation}
 
 \subsection{Schoenberg's Theroem}
-Suppose a kernel function $K$ is not positive definite, it may not represent an inner product in any Hilbert space. Here is one way to see. A kernel $K$ is positive definite if and only if for all samples of n points, its corresponding kernel matrix $\mathcal{K}$ is a positive definite matrix. With a positive definite $\mathcal{K}$, by Cholesky decompose $\mathcal{K}=LL^T$, each row of $L$ as one mapped point in the inner product space. If $K$ is not positive definite, the matrix $\mathcal{K}$ may also not be positive definite. Consequently, Cholesky does not work and there is no corresponding inner product space. 
+Suppose a kernel function $K$ is not positive definite, it may not represent an inner product in any Hilbert space. Here is one way to see. A kernel $K$ is positive definite if and only if for all samples of n points, its corresponding kernel matrix $\mathcal{K}$ is a positive definite matrix. With a positive definite $\mathcal{K}$, by Cholesky decompose $\mathcal{K}=LL^T$, each row of $L$ is one mapped point in the inner product space. If $K$ is not positive definite, the matrix $\mathcal{K}$ may also not be positive definite. Consequently, Cholesky does not work and there is no corresponding inner product space. 
 
 \textbf{Definition.} A function $f$ with domain $(0, \infty)$ is said to be completely monotonic, if it possesses derivatives $f^{(n)}(x)$ for all $n=0,1,2,3,...$ and if $(-1)^nf^{(n)}(x) \geq 0$\cite{CMF}. 
 
@@ -310,7 +309,7 @@ K(x,y)=f(\norm{x-y}^2)
 is positive definite on any Hilbert space. Since the radial kernel is already symmetric, the above Schoenberg's theorem provides us a direct way to get a symmetric positive definite kernel function satisfying RKHS definition for our model.
 
 \section{KCCA}
-In section 2.3, we explain CCA step by step. For two random vectors $x\in R^{m}$ and $y\in R^{n}$, let $z= \begin{bmatrix}x^T & y^T\end{bmatrix}^T \in R^{m+n}$ and assume that x and y have zero means. formula 2.7 is the covariance matrix of $x$ and $y$. The elements of the cross-covariance matrix $R_{xy}$ are inner products in Hilbert space of second-order random variables. $R_{xy}[i,j]=E[x_{i}y_{j}]$ is the inner product between random variables $x_{i}$ and $y_{j}$ in the Hilbert space. To leverage the power of non-linearity, we apply kernel methods to CCA. As in the linear case, the aim of KCCA is to find canonical variables of the input data. Thus we derive its calculation based upon the formulas for CCA in section 2.3. 
+In section 2.3, we explain CCA step by step. For two random vectors $x\in R^{m}$ and $y\in R^{n}$, let $z= \begin{bmatrix}x^T & y^T\end{bmatrix}^T \in R^{m+n}$ and assume that x and y have zero means. Formula 2.7 is the covariance matrix of $x$ and $y$. The elements of the cross-covariance matrix $R_{xy}$ are inner products in Hilbert space of second-order random variables. $R_{xy}[i,j]=E[x_{i}y_{j}]$ is the inner product between random variables $x_{i}$ and $y_{j}$ in the Hilbert space. To leverage the power of non-linearity, we apply kernel methods to CCA. As in the linear case, the aim of KCCA is to find canonical variables of the input data. Thus we derive its calculation based upon the formulas for CCA in section 2.3. 
 
 Here, to obtain the covariance matrix of $x$ and $y$ in RKHS, we define
 \begin{equation}
@@ -358,12 +357,12 @@ that has the largest variance. After the first principal component \(Z_{1}\) of 
 Finally, we will have totally p unique principal components \(Z_{1}, Z_{2},..., Z_{p}\). Each unique principal component \(Z_{i}\) explains a specific percentage of variance to the original dataset, a positive quantity, ranging from 0 to 1. And the percentages of all p principal components sum to 1. In most programming PCA tools, the principal components appear with a descending order of the percentages by variance they explain. These percentages are cumulative, indicating the cumulative variance explained to the original dataset by their corresponding principal components. Thus, to understand the data and execute proceeding analysis after PCA, we typically extract first k principal components \(Z_{1}, Z_{2},..., Z_{k}, k <p \). These k principal components usually explain most of the variance of the original data, above 90\% or 95\%.
 
 \chapter{Model Design}
-In Section 2.1 and 2.2, we described how autoencoders learn through training and finally reconstruct data $x$ back to its original space with minimal reconstruction errors. Herein we modify this task that given input dataset $x$, the model reconstructs another "potentially correlated dataset" $y$. From initial experiments on autoencoders, we find that the reconstruction results are mediocre. Actually, an autoencoder does not have explicit training process to explore the dependency between two datasets $x$ and $y$. Instead, it merely explores ``direct mapping" from one cluster of patterns to another one. This leads to devastating issues in reconstruction results (In next Chapter, we will use some image examples to demonstrate this deficiency). To better accomplish the new task, we introduce CCA and KCCA to explore the dependency between the pair of input data sets. 
+In Section 2.1 and 2.2, we describe how autoencoders learn through training and finally reconstruct data $x$ back to its original space with minimal reconstruction errors. Herein we modify this task: given an input data set $x$, we want our model to reconstruct another data set $y$. From initial experiments on autoencoders, we find that the reconstruction results are mediocre. Actually, an autoencoder does not have explicit training process to explore the dependency between two datasets $x$ and $y$. Instead, it merely explores ``direct mapping" from one cluster of patterns to another one. This leads to devastating issues in reconstruction results (In next Chapter, we will use some image examples to demonstrate this deficiency). To better accomplish the new task, we introduce CCA and KCCA to explore the dependency between the pair of input data sets. 
 
-In this Chapter, we will introduce three models, the \textit{Non-Coherence Encoder (NCE)}, the \textit{Coherence Encoder (CE)} and the \textit{Kernel Coherence Encoder (KCE)} as well as their theoretical details. NCE is designed without CCA and coherence. In this model, the connection between the two data sets is explored exclusively through deep learning. In CE, we apply linear CCA within its encoder phase which outputs linear canonical variables to the decoder phase. In KCE, the ultimate model of the thesis research, we substitute linear CCA with KCCA thus extending the encoder phase to a non-linear stage. Notably, the decoder phases for these three models have exactly the same structures. 
+In this Chapter, we will introduce three models, the \textit{Non-Coherence Encoder (NCE)}, the \textit{Coherence Encoder (CE)} and the \textit{Kernel Coherence Encoder (KCE)} as well as their theoretical details. NCE is designed without CCA and coherence. In this model, the connection between the two data sets is explored exclusively through deep learning. In CE, we apply linear CCA within its encoder phase which outputs linear canonical variables to the decoder phase. In KCE, the ultimate model of the thesis research, we substitute linear CCA with KCCA thus extending the encoder phase to a non-linear stage. Notably, the decoder phases for these three models have exactly the same structure. 
 
 \section{Non-Coherence Encoder (NCE)}
-This Section is a general introduction of NCE. The flowchart in figure 3.1 provides a step-by-step description. The model is divided into two phases, the encoder phase, and the decoder phase. Though having a different structure from an autoencoder, it maintains its major properties: dimension reduction, non-linear mapping, and reconstruction error minimization. The encoder phase reduces the dimension of input data, while the decoder phase maps data back to their original spaces and finish the reconstruction.
+This Section is a general introduction to NCE. The flowchart in figure 3.1 provides a step-by-step description. The model is divided into two phases, the encoder phase, and the decoder phase. Though having a different structure from an autoencoder, it maintains its major properties: dimension reduction, non-linear mapping, and reconstruction error minimization. The encoder phase reduces the dimension of input data, while the decoder phase maps data back to their original spaces and finish the reconstruction.
 \begin{figure}[H]
 	\begin{tikzpicture}[node distance=4cm]
 	
@@ -403,7 +402,7 @@ The only step in the encoder phase of the model NCE is PCA. We reduce the dimens
 
 \textbf{PCA}
 
-In real-life problems, data $x\in \mathbb{R}^{n}$ and $y\in \mathbb{R}^{n}$ are usually high-dimensional, addressing the concern about constitutional efficiency, and moreover, over-fitting\cite{STAT} that makes our model neither efficient nor effective. So we apply PCA to reduce the dimensions of original data. As we described in Chapter 2, PCA is a dimension reduction algorithm that allows us to summarize high-dimensional data set with a smaller number of representative variables that collectively explain most of the variability in the original set.
+In real-life problems, data $x\in \mathbb{R}^{n}$ and $y\in \mathbb{R}^{n}$ are usually high-dimensional, addressing the concern about computational efficiency, and moreover, over-fitting\cite{STAT} that makes our model neither efficient nor effective. So we apply PCA to reduce the dimensions of original data. As we described in Chapter 2, PCA is a dimension reduction algorithm that allows us to summarize high-dimensional data set with a smaller number of representative variables that collectively explain most of the variability in the original set.
 
 To reach a trade-off between model accuracy and the above two concerns, we take the first k principal components \(Z_{1}, Z_{2},..., Z_{k}\) that explain over 90\% variance of the original data, where $k$ is a much smaller integer compared with the original dimension $n$. As a result, the input data for the KCCA step become $z_x\in \mathbb{R}^{k}$ and $z_y\in \mathbb{R}^{k}$. Meanwhile, we keep the eigenvectors and means of $x$ and $y$ generated in this step for PCA reconstruction.
 
@@ -439,7 +438,7 @@ x''= z_x^{'}\cdot Eigenvectors_{x}^T + Mean_x
 
 \textbf{Non-linear ANNs}
 
-From experimental results, we find that the results of PCA reconstruction, $y''$ and $x''$, though in the feature space of $y$ and $x$, are not precise reconstruction. On the one hand, PCA reconstruction amplifies training errors from $\mathbb{R}^{k}$ to $\mathbb{R}^{n}$. On the other hand, since the k principal components explain about 90\% variances, a small part of the information from the original data gets lost. For these two reasons, we need one more training step where the errors are computed in the feature spaces of original data sets.
+From experimental results, we find that the results of PCA reconstruction $y''$ and $x''$, though in the feature space of $y$ and $x$, are not precise reconstruction. On the one hand, PCA reconstruction amplifies training errors from $\mathbb{R}^{k}$ to $\mathbb{R}^{n}$. On the other hand, since the k principal components explain about 90\% variances, a small part of the information from the original data gets lost. For these two reasons, we need one more training step where the errors are computed in the feature spaces of original data sets.
 
 This training process for our model is a pair of two-layer non-linear encoders mapping $y''$ to $y'$ and $x''$ to $x'$ respectively. It minimizes the error between $y'$ and original data $y$ and error between $x'$ and original data $x$. We define the two ANNs as $\mathcal{E}_1$ and $\mathcal{E}_2$:
 \begin{equation}
@@ -453,7 +452,7 @@ This training process for our model is a pair of two-layer non-linear encoders m
 This is the last step of the whole model. Once the training errors converge, we obtain reconstruction $y'$ and $x'$ and evaluate the model performance.
 
 \section{Coherence Encoder (CE)}
-This Section is a general introduction to CE. The flowchart in figure 3.2 provides a stepwise description of the model. CE also has encoder phase and decoder phase. Comparing with NCE, the encoder phase contains CCA while the decoder phase remains consistent.  
+This Section is a general introduction to CE. The flowchart in figure 3.2 provides a stepwise description of the model. CE also has encoder phase and decoder phase. Comparing with NCE, the encoder phase contains CCA while the decoder phase remains the same.  
 \begin{figure}[H]
 	\begin{tikzpicture}[node distance=4cm]
 	
@@ -464,7 +463,7 @@ This Section is a general introduction to CE. The flowchart in figure 3.2 provid
 	\draw [arrow] (p1) -- (p2);
 	\draw [arrow] (p1) -- (p3);
 	
-	\node (p4) [process, below right of = p2] {CCA on $z_x,z_y$, obtaining kernel function $K(z_x, z_y)$ and canonical variables $u,v$};
+	\node (p4) [process, below right of = p2] {CCA on $z_x,z_y$, obtaining canonical variables $u,v$};
 	
 	\draw [arrow] (p2) -- (p4);
 	\draw [arrow] (p3) -- (p4);
@@ -493,24 +492,24 @@ This Section is a general introduction to CE. The flowchart in figure 3.2 provid
 \end{figure}
 
 \subsection{Encoder Phase}
-In the encoder phase of CE, we apply linear CCA to extract the connection between the two datasets. More precisely, CCA is done with the principal components of the original data.
+In the encoder phase of CE, we apply linear CCA to extract the connection between the two data sets. More precisely, CCA is done with the principal components of the original data.
 
 \textbf{PCA}
 
-The PCA step is exactly the same as the encoder phase of NCE. It takes original data $x\in \mathbb{R}^{n}$ and $y\in \mathbb{R}^{n}$ and generates their principal components $z_x\in \mathbb{R}^{k}$ and $z_y\in \mathbb{R}^{k}$.
+The PCA step is exactly the same with the encoder phase of NCE. It takes original data $x\in \mathbb{R}^{n}$ and $y\in \mathbb{R}^{n}$ and generates their principal components $z_x\in \mathbb{R}^{k}$ and $z_y\in \mathbb{R}^{k}$.
 
 \textbf{CCA}
 
 In this step, CE extracts correlation between two sets of principal components by linear CCA. Here we obtain the canonical variables $u$ and $v$ corresponding to $z_x$ and $z_y$. 
 
-The calculation is based upon formulas in Section 2.3. Given principal components $z_x\in \mathbb{R}^{k}$ and $z_y\in \mathbb{R}^{k}$. Let $z= \begin{bmatrix}x^T & y^T\end{bmatrix}^T \in \mathbb{R}^{n2k}$. We obtain the following covariance matrix
+The calculation is based upon formulas in Section 2.3. Given principal components $z_x\in \mathbb{R}^{k}$ and $z_y\in \mathbb{R}^{k}$. Let $z= \begin{bmatrix}z_x^T & z_y^T\end{bmatrix}^T \in \mathbb{R}^{2k}$. We obtain the following covariance matrix
 \begin{equation}
 R_{zz}=E[zz^T]=\begin{bmatrix}
 R_{z_{x}z_{x}} & R_{z_{x}z_{y}} \\
 R_{z_{x}z_{y}} & R_{z_{y}z_{y}}
 \end{bmatrix}
 \end{equation}
-Then, with formulas 2.8 to 2.11, we get that canonical variables $u$ and $v$,
+Then, with formulas 2.8 to 2.11, we get the canonical variables $u$ and $v$,
 \begin{equation}
 u=F^TR_{xx}^{-1/2}x,\quad v=G^TR_{yy}^{-T/2}y
 \end{equation}
@@ -519,7 +518,7 @@ u=F^TR_{xx}^{-1/2}x,\quad v=G^TR_{yy}^{-T/2}y
 As we mentioned earlier, the decoder phase of CE shares exactly the same structure with the decoder phase of NCE. The only difference is that here we take canonical variables $u$ and $v$ as the input of the decoder phase. 
 
 \section{Kernel Coherence Encoder (KCE)}
-Based on the idea of autoencoder and linear CCA, we built CE. In KCE we extend the traditional CCA from linear to non-linear by kernel methods and increase the performance of CCA in a similar way by leveraging the non-linear capabilities of autoencoders. The flowchart in figure 3.3 provides a stepwise description of KCE.
+Based on the ideas of autoencoder and linear CCA, we built CE. In KCE we extend the traditional CCA from linear to non-linear by kernel methods and increase the performance of CCA in a similar way by leveraging the non-linear capabilities of autoencoders. The flowchart in figure 3.3 provides a stepwise description of KCE.
 \begin{figure}[H]
 	\begin{tikzpicture}[node distance=4cm]
 	
@@ -564,7 +563,7 @@ In the encoder phase of KCE, we apply KCCA to extract the nonlinear dependency b
 
 \textbf{PCA}
 
-The PCA step is exactly the same as the encoder phase of NCE and CE. It takes original data $x\in \mathbb{R}^{n}$ and $y\in \mathbb{R}^{n}$ and generates their principal components $z_x\in \mathbb{R}^{k}$ and $z_y\in \mathbb{R}^{k}$.
+The PCA step is exactly the same with the encoder phase of NCE. It takes original data $x\in \mathbb{R}^{n}$ and $y\in \mathbb{R}^{n}$ and generates their principal components $z_x\in \mathbb{R}^{k}$ and $z_y\in \mathbb{R}^{k}$.
 
 \textbf{KCCA}
 
@@ -596,7 +595,7 @@ H=1-L=1-\frac{det\left(\begin{bmatrix}
 	\end{bmatrix}\right)}
 {det(R_{z_{x}z_{x}})det(R_{z_{y}z_{y}})}
 \end{equation}
-One problem of the above formulas is that they are sensitive to high-dimensional space. If one \(\sigma_i\) is large, the result of dependence formula tends to 0 and coherence tends to 1. As a result, the coherence between $z_x$ and $z_y$ tends to small if any $z_x$ is predictable for any $z_y$ or any $z_y$ is predictable for any $z_x$. On the other hand, the high-dimensional cross-covariance matrix can be close to singular matrix and difficult to compute determinant. Here we propose a novel element-wise modification to the calculation of dependence and coherence to avoid above issues:
+One problem of the above formulas is that they are sensitive to high-dimensional space. If one \(\sigma_i\) is large, the result of dependence formula tends to 0 and coherence tends to 1. As a result, the coherence between $z_x$ and $z_y$ tends to small if any $z_x$ is predictable for any $z_y$ or any $z_y$ is predictable for any $z_x$. On the other hand, the high-dimensional covariance matrix can be close to singular and makes it difficult to compute determinant, as is required by using a coherence metric. Here we propose a novel element-wise modification to the calculation of dependence and coherence to avoid above issues:
 \begin{equation}
 L_{i,j}=\frac{det\left(\begin{bmatrix}
 	R_{z_{x,i}z_{x,i}} & R_{z_{x,i}z_{y,j}} \\
@@ -606,20 +605,20 @@ L_{i,j}=\frac{det\left(\begin{bmatrix}
 \frac{R_{z_{x,i}z_{x,i}}R_{z_{y,j}z_{y,j}}-R_{z_{x,i}z_{y,j}}R_{z_{y,j}z_{x,i}}}
 {R_{z_{x}z_{x}}R_{z_{y}z_{y}}}
 \end{equation}
-\(C_{i,j}\) represents the predictability between $z_{x,i}$ and $z_{y,j}$. Now we have
+\(L_{i,j}\) represents the element-wise dependence between $z_{x,i}$ and $z_{y,j}$. Now we have
 \begin{equation}
 L=\frac{\sum_{i,j=1}^{k}(L_{i,j})^2}{n^2}
 \end{equation}
 \begin{equation}
 C=1-L=1-\frac{\sum_{i,j=1}^{k}(L_{i,j})^2}{n^2}
 \end{equation}
-By our new formula, the novel coherence C is small if and only if all $z_x$ is predictable from $z_y$ and all $z_y$ is predictable from $z_x$. As a result, in the encoder phase, the connection between $x$ and $y$ comes only from the element-wise coherence between $z_x$ and $z_y$ in the RKHS. We define $\kappa$ as the kernel function training process
+By our new formula, the novel coherence C is small if and only if all $z_x$ is predictable from $z_y$ and all $z_y$ is predictable from $z_x$. As a result, in the encoder phase of KCE, the connection between $x$ and $y$ comes only from the element-wise coherence between $z_x$ and $z_y$ in the RKHS. We define $\kappa$ as the kernel function training process
 \begin{equation}
 \kappa=\operatorname*{argmin}_{\alpha,\beta} L
 \end{equation}
 Once the cost converges to a small value, we obtain the parameters $\alpha$ and $\beta$ and the corresponding optimal kernel function $K(z_{x,i},z_{y,j})=e^{-\alpha \norm{z_{x,i}-z_{y,j}}^2 + \beta}$.
 
-The representation of $R_{zz}$ follows formula 2.18 while the calculation of canonical variables $u$ and $v$, same with that in CE, comes with formulas 2.8 to 2.11.
+The representation of $R_{zz}$ follows formula 2.18 while the remaining calculation of canonical variables $u$ and $v$ follows formulas 2.8 to 2.11.
 
 \subsection{Decoder Phase}
 The decoder phase of the KCE shares exactly the same structure with the decoder phases of the other two models. 
@@ -692,7 +691,7 @@ where $\alpha$ refers to learning rate and $G()$ refers to the gradient of a par
 \subsection{Training Parameters}
 We set the training parameters for all training processes in the models:
 
-\textit{hidden layer number = 100, \\
+\textit{hidden layer dimension = 100, \\
 	learning rate = 0.01, \\
 	training epochs = 2000, \\
 	batch size = 100}
@@ -738,7 +737,7 @@ In signal processing, cross-correlation\cite{CC} is a measure of similarity of t
 &CC(y,y')=\dfrac{\sum_{i=1}^{n} (y_i-\overline{y})(y'_i-\overline{y'})}{n \sqrt{var(y)var(y')}}
 \end{split}
 \end{equation}
-However, for 2-dimensional data, this measure has one advantage: it takes care of the data shifting just like cross-correlation method takes care of the time-delay between signals in signal processing. In our case, let $c2d()$ refers to 2-dimensional cross-correlation computation, for the reshaping data $x,y,x',y' \in \mathbb{R}^{m\times n}$,
+However, for 2-dimensional data, this measure has one advantage: it takes care of the data shifting just like cross-correlation method takes care of the time-delay between signals in signal processing. In our case, let $c2d()$ represents 2-dimensional cross-correlation computation, for the reshaping data $x,y,x',y' \in \mathbb{R}^{m\times n}$,
 \begin{equation}
 \begin{split}
 &CC2d_x = c2d(\dfrac{x-\overline{x}}{\sqrt{var(x)}},\dfrac{x'-\overline{x'}}{\sqrt{var(x')}})/(m\cdot n) \\
@@ -771,7 +770,7 @@ A rank ranges from -1 to 1, where 1 is obtained if two datasets are exactly the 
 
 \section{Reconstruction Images}
 \subsection{Simple ANNs Reconstruction}
-Our initial trial for reconstruction is running a pair of non-linear ANNs on the MNIST data sets. This is a simulation of the autoencoders. The neural networks, with one data set as input, are trained to minimize the difference between reconstructed data and the other data set. Consequently, the model builds maps between two correlated data sets.  
+Our initial trial for reconstruction is running a pair of non-linear ANNs on the MNIST data sets. This is a simulation of the autoencoders. The neural networks, with one data set as input, are trained to minimize the difference between reconstructed data and the other data set. Consequently, the model builds maps between two dependent data sets.  
 \begin{figure}[H]
 	\begin{tikzpicture}[node distance=4cm]
 	
@@ -789,10 +788,10 @@ Our initial trial for reconstruction is running a pair of non-linear ANNs on the
 	
 	\end{tikzpicture}
 	\centering
-	\caption{Flow chart of the simple paired ANNs. We initially design this model to work like ``paired autoencoders".}
+	\caption{Flowchart of the simple paired ANNs. We initially design this model to work like ``paired autoencoders".}
 	\label{fig:4}
 \end{figure}
-The two ANNs work independently and map $x$ to $y$ and $y$ to $x$ respectively. Each one of the ANNs is comprised of two non-linear layers following the classical activation function \(h=\sigma(Wx+b)\). Below are some examples of the reconstruction images (we randomly select 6 hand-written images for each digit. The left part of a picture is the original digit image and the right part is the reconstructed image). Although the ANNs reconstruct most of the patterns for these images, it is notable that some abnormal white pixels in black background impact the reconstruction quality. And the positions of these pixels are exactly the same in the samples of each digit. These flaws originate from the fact that ANNs learn and ``memorize" a map between the two datasets $x$ and $y$, preventing the reconstruction from perfect. We call this issue ``black-to-white" mapping errors. It is an interesting and meaningful theoretical question to explore\cite{DLRG}, but here we are not going to explore it now.
+The two ANNs work independently and map $x$ to $y$ and $y$ to $x$ respectively. Each one of the ANNs is comprised of two non-linear layers following the classical activation function \(h=\sigma(Wx+b)\). Below are some examples of the reconstruction images (we randomly select 6 hand-written images for each digit. The left part of a picture contains original digit images and the right part contains reconstructed images). Although the ANNs reconstruct most of the patterns for these images, it is notable that some abnormal white pixels in black background impact overall reconstruction quality. And the positions of these pixels are exactly the same in the samples of each digit. These flaws originate from the fact that ANNs learn and ``memorize" a map between the two datasets $x$ and $y$, preventing the reconstruction from perfect. We call this issue ``black-to-white" mapping errors. It is an interesting and meaningful theoretical question to explore\cite{DLRG}, but here we are not going to discuss it now.
 \begin{figure}[H]
 	\centering
 	\subfloat[1 upper]{\includegraphics[scale=0.3]{pictures/ANN_1_up.png}} 
@@ -849,7 +848,7 @@ The two ANNs work independently and map $x$ to $y$ and $y$ to $x$ respectively. 
 \end{tabular}
 \\
 \\
-In the above table, we post all the testing reconstruction results by the three well-trained models, KCE, CE and NCE. In this part, we randomly select 6 hand-written images for each digit from test data set and run all three models on these samples. The left part of a picture is the original digit image and the right part is the reconstructed image. 
+In the above table, we post all testing reconstruction results by the three well-trained models, KCE, CE and NCE. In this part, we randomly select 6 hand-written images for each digit from test data set and run all three models on these samples. The left part of a picture contains original digit images and the right part contains reconstructed images. 
 
 Note, here we set KCE as the benchmark for comparison. The essential purpose is to demonstrate the effectiveness of KCCA compared with linear CCA and non-CCA in our task. Since the decoder phases are identical within all three models, the reconstruction results can reflect the effectiveness of the encoder phase, more specifically, KCCA, CCA or neither. 
 
