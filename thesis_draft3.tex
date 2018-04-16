@@ -205,7 +205,7 @@ In a typical autoencoder, when there is one hidden layer, the encoder stage of a
 \begin{split}
 & \phi:\mathcal{X}\to\mathcal{F} \\
 & \psi:\mathcal{F}\to\mathcal{X} \\
-& \mathcal{AE}=\operatorname*{argmin}_{\phi,\psi} \norm{X-\psi(\phi(X))}^2
+& \mathcal{AE}_{\phi,\psi}=\operatorname*{argmin}_{\phi,\psi} \norm{X-\psi(\phi(X))}^2
 \end{split}
 \end{equation}
 The encoder stage of the autoencoder maps $x$ to a mid-layer $z$ (usually in lower dimension):
@@ -276,11 +276,12 @@ Kernel methods owe their name to the use of kernel functions, which enable them 
 	\caption{A visual demonstration of kernel function. A kernel function maps data from original feature space to a higher dimensional space and avoids the explicit mapping that is needed to get linear learning algorithms to learn a nonlinear function or decision boundary\cite{KPIC}.}
 	\label{fig:4}
 \end{figure}
+In particular, Mercer's theorem\cite{MT} provides a mathematical foundation for the kernel methods. 
 
 \subsection{Positive Definite Kernel}
 A positive definite kernel is a generalization of a positive definite function or a positive definite matrix. It makes sure there is a corresponding inner product space for $x$ and $y$. Its greatest advantage is that positive definite kernels can be defined on every set. Therefore it can be applied to data of any type.
 
-\textbf{Definition.}\cite{MT} A kernel is a symmetric continuous function
+\textbf{Definition.}\cite{PD} A kernel is a symmetric continuous function
 \begin{equation}
 K:[a,b] \times [a,b] \rightarrow \mathbb {R}
 \end{equation}
@@ -294,7 +295,7 @@ The computation for kernel function $K$ is made much simpler if the kernel can b
 
 In KPCA or KCCA, a kernel function maps data from original space to an inner product space RKHS to ensure both the existence of an inner product and the evaluation of every function in this space at every point in the domain. From the definition of RKHS, the corresponding kernel function should be both symmetric and positive definite\cite{RKHS}.
 
-\subsection{Schoenberg's Theroem}
+\subsection{Schoenberg's Theorem}
 Suppose a kernel function $K$ is not positive definite, it may not represent an inner product in any Hilbert space. Here is one way to see. A kernel $K$ is positive definite if and only if for all samples of n points, its corresponding kernel matrix $\mathcal{K}$ is a positive definite matrix. With a positive definite $\mathcal{K}$, by Cholesky decompose $\mathcal{K}=LL^T$, each row of $L$ is one mapped point in the inner product space. If $K$ is not positive definite, the matrix $\mathcal{K}$ may also not be positive definite. Consequently, Cholesky does not work and there is no corresponding inner product space. 
 
 \textbf{Definition.} A function $f$ with domain $(0, \infty)$ is said to be completely monotonic, if it possesses derivatives $f^{(n)}(x)$ for all $n=0,1,2,3,...$ and if $(-1)^nf^{(n)}(x) \geq 0$\cite{CMF}. 
@@ -347,9 +348,15 @@ We mimic all the remaining formulas from 2.8 to 2.13, except that, with kernel m
 \section{Principal Component Analysis}
 Principal Component Analysis (PCA) is a popular unsupervised learning approach for discovering a low-dimensional set of features from a large set of variables. We rest our introduction to this algorithm upon the definitions in \cite{STAT} and closely follow its organization. For high-dimensional data, principal components allow us to summarize this set with a smaller number of representative variables that collectively explain most of the variability in the original set. PCA refers to the process by which principal components are computed, and the subsequent use of these components in understanding the data. The first principal component of a set of features \(X = (X_{1}, X_{2},..., X_{p})\) is the normalized linear combination of the features
 \begin{equation}
-Z_{1} = \phi_{11}X_{1} + \phi_{21}X_{2} +...+ \phi_{p1}X_{p}
+Z_{1} = \alpha_{11}X_{1} + \alpha_{21}X_{2} +...+ \alpha_{p1}X_{p}
 \end{equation}
-that has the largest variance. After the first principal component \(Z_{1}\) of the features has been determined, we can find the second principal component \(Z_{2}\). The second principal component is the linear combination of \(X = (X_{1}, X_{2},..., X_{p})\) that has maximal variance out of all linear combinations that are uncorrelated with \(Z_{1}\). The third principal component is the linear combination of \(X = (X_{1}, X_{2},..., X_{p})\) that has maximal variance out of all linear combinations that are uncorrelated with \(Z_{1}\) and \(Z_{2}\). So on and so forth. 
+that has the largest variance. The first principal component vector $z_1$ solves the following optimization problem:
+\begin{equation}
+\operatorname*{maximize}_{\alpha_{11},...,\alpha_{p1}}\dfrac{1}{n}\sum_{i=1}^{n}(\sum_{j=1}^{p}\alpha_{j1}x_{ij})^2 \ subject \ to \ \sum_{j=1}^{p}\alpha_{j1}^2=1
+\end{equation}
+This can be solved via an eigen decomposition, a standard technique in linear algebra.
+
+After the first principal component \(Z_{1}\) of the features has been determined, we can find the second principal component \(Z_{2}\). The second principal component is the linear combination of \(X = (X_{1}, X_{2},..., X_{p})\) that has maximal variance out of all linear combinations that are uncorrelated with \(Z_{1}\). The third principal component is the linear combination of \(X = (X_{1}, X_{2},..., X_{p})\) that has maximal variance out of all linear combinations that are uncorrelated with \(Z_{1}\) and \(Z_{2}\). So on and so forth. 
 
 Finally, we will have totally p unique principal components \(Z_{1}, Z_{2},..., Z_{p}\). Each unique principal component \(Z_{i}\) explains a specific percentage of variance to the original dataset, a positive quantity, ranging from 0 to 1. And the percentages of all p principal components sum to 1. In most programming PCA tools, the principal components appear with a descending order of the percentages by variance they explain. These percentages are cumulative, indicating the cumulative variance explained to the original dataset by their corresponding principal components. Thus, to understand the data and execute proceeding analysis after PCA, we typically extract first k principal components \(Z_{1}, Z_{2},..., Z_{k}, k <p \). These k principal components usually explain most of the variance of the original data, above 90\% or 95\%.
 
