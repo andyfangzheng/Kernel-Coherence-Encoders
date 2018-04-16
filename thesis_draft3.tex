@@ -411,11 +411,11 @@ The decoder phase of NCE maps $z_x$ to $y'$ and $z_y$ to $x'$ through three step
 
 \textbf{Linear ANNs}
 
-The first step for the decoder phase is to transfer the canonical variables $u$ and $v$ to the spaces of principle components $z_y$ and $z_x$ respectively. Here we use a pair of two-layer linear ANNs to map $u$ and $v$ to $z_y{'}$ and $z_x{'}$, namely $\gamma_1$ and $\gamma_2$:
+The first step for the decoder phase is to transfer $z_x$ and $z_y$ to the spaces of principle components $z_y$ and $z_x$ respectively. Here we use a pair of two-layer linear ANNs to map $z_x$ and $z_y$ to $z_y{'}$ and $z_x{'}$, namely $\gamma_1$ and $\gamma_2$:
 \begin{equation}
 \begin{split}
-&z_y^{'}=W_{1,2}(W_{1,1}u+b_{1,1})+b_{1,2} \\
-&z_x^{'}=W_{2,2}(W_{2,1}v+b_{2,1})+b_{2,2} \\
+&z_y^{'}=W_{1,2}(W_{1,1}z_x+b_{1,1})+b_{1,2} \\
+&z_x^{'}=W_{2,2}(W_{2,1}z_y+b_{2,1})+b_{2,2} \\
 &\gamma_1(W_{1,1},W_{1,2},b_{1,1},b_{1,2})=\operatorname*{argmin}_{W_{1,1},W_{1,2},b_{1,1},b_{1,2}}\norm{z_y-z_y^{'}}^2 \\
 &\gamma_2(W_{2,1},W_{2,2},b_{2,1},b_{2,2})=\operatorname*{argmin}_{W_{2,1},W_{2,2},b_{2,1},b_{2,2}}\norm{z_x-z_x^{'}}^2
 \end{split}
@@ -440,7 +440,7 @@ x''= z_x^{'}\cdot Eigenvectors_{x}^T + Mean_x
 
 From experimental results, we find that the results of PCA reconstruction $y''$ and $x''$, though in the feature space of $y$ and $x$, are not precise reconstruction. On the one hand, PCA reconstruction amplifies training errors from $\mathbb{R}^{k}$ to $\mathbb{R}^{n}$. On the other hand, since the k principal components explain about 90\% variances, a small part of the information from the original data gets lost. For these two reasons, we need one more training step where the errors are computed in the feature spaces of original data sets.
 
-This training process for our model is a pair of two-layer non-linear encoders mapping $y''$ to $y'$ and $x''$ to $x'$ respectively. It minimizes the error between $y'$ and original data $y$ and error between $x'$ and original data $x$. We define the two ANNs as $\mathcal{E}_1$ and $\mathcal{E}_2$:
+This training process for our model is a pair of two-layer non-linear ANNs mapping $y''$ to $y'$ and $x''$ to $x'$ respectively. It minimizes the error between $y'$ and original data $y$ and error between $x'$ and original data $x$. We define the two ANNs as $\mathcal{E}_1$ and $\mathcal{E}_2$:
 \begin{equation}
 \begin{split}
 &y'=W_{1,3}(W_{1,4}y''+b_{1,3})+b_{1,4} \\
@@ -516,6 +516,14 @@ u=F^TR_{xx}^{-1/2}x,\quad v=G^TR_{yy}^{-T/2}y
 
 \subsection{Decoder Phase}
 As we mentioned earlier, the decoder phase of CE shares exactly the same structure with the decoder phase of NCE. The only difference is that here we take canonical variables $u$ and $v$ as the input of the decoder phase. 
+\begin{equation}
+\begin{split}
+&z_y^{'}=W_{1,2}(W_{1,1}u+b_{1,1})+b_{1,2} \\
+&z_x^{'}=W_{2,2}(W_{2,1}v+b_{2,1})+b_{2,2} \\
+&\gamma_1(W_{1,1},W_{1,2},b_{1,1},b_{1,2})=\operatorname*{argmin}_{W_{1,1},W_{1,2},b_{1,1},b_{1,2}}\norm{z_y-z_y^{'}}^2 \\
+&\gamma_2(W_{2,1},W_{2,2},b_{2,1},b_{2,2})=\operatorname*{argmin}_{W_{2,1},W_{2,2},b_{2,1},b_{2,2}}\norm{z_x-z_x^{'}}^2
+\end{split}
+\end{equation}
 
 \section{Kernel Coherence Encoder (KCE)}
 Based on the ideas of autoencoder and linear CCA, we built CE. In KCE we extend the traditional CCA from linear to non-linear by kernel methods and increase the performance of CCA in a similar way by leveraging the non-linear capabilities of autoencoders. The flowchart in figure 3.3 provides a stepwise description of KCE.
@@ -634,7 +642,7 @@ MNIST data set\cite{MNIST} is a classical data set widely used for machine learn
 	\label{fig:1}
 \end{figure}
 
-To fit our model design, we need a pair of data sets with some correlations in between. Our strategy is to cut each image (784 pixels) to upper and lower parts with equal sizes ($28 \times 14$), as shown in Figure 4.2. The upper parts of the images are $x$ and the lower parts of the images are $y$. In this circumstance, features in $x$ and $y$ are dependent on each other.
+To fit our model design, we need a pair of data sets with some correlations in between. Our strategy is to cut each image (784 pixels) to upper and lower parts with equal sizes ($14 \times 28$), as shown in Figure 4.2. The upper parts of the images are $x$ and the lower parts of the images are $y$. In this circumstance, features in $x$ and $y$ are dependent on each other.
 
 Given the labels indicating the digit, we group the images by their labels thus each group contains images corresponding to only one digit. We test our model for each group separately where images share similar features and patterns of that digit. This is to ensure the strength of dependency between two data sets.
 \begin{figure}[H]
@@ -1049,7 +1057,7 @@ Third, so far we have only done the experiments on MNIST data. We should explore
 	Picture resource by Qef (talk) - Created from scratch with gnuplot, Public Domain, \textit{https://commons.wikimedia.org/w/index.php?curid=4310325}
 
 	\bibitem{AEPIC}
-	Picture resource by Chervinskii - Own work, CC BY-SA 4.0,  \textit{://commons.wikimedia.org/w/index.php?curid=45555552}
+	Picture resource by Chervinskii - Own work, CC BY-SA 4.0,  \textit{https://commons.wikimedia.org/w/index.php?curid=45555552}
 
 	\bibitem{TFPIC}
 	Picture resource by Abadi, Martín, et al. "TensorFlow: A System for Large-Scale Machine Learning." \textit{OSDI. Vol. 16. 2016.}
