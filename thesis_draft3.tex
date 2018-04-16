@@ -200,15 +200,15 @@ An autoencoder is an artificial neural network used for unsupervised learning of
 \end{figure}
 Typically, an autoencoder consists two parts, an encoding phase (encoder) \(E(\cdot)\) and an decoding phase (decoder) \(D(\cdot)\). The encoder \(E(\cdot)\) receives input data and outputs mid-layer-data, which acts as the input data for the decoder \(D(\cdot)\). The decoder maps the mid-layer-data back to the original feature space. The encoder and decoder can be comprised of single layer or multiple layers, each layer with a function \(z=\sigma(Wx+b)\) mapping \(x\in \mathbb{R}^{d}\) to \(z\in \mathbb{R}^{p}\).  \(\sigma\) is an element-wise activation function such as a sigmoid function or a rectified linear unit. 
 
-In a typical autoencoder, when there is one hidden layer, the encoder stage of an autoencoder maps \(x\in \mathbb{R}^{d}=\mathcal{X}\) to \(z\in \mathbb{R}^{p}=\mathcal{F}\) ($z$ is hidden layer, for this simplest case, it is also the mid-layer of the whole autoencoder). The encoder \(E(\cdot)\) and the decoder \(D(\cdot)\) can be defined as transitions $\phi$ and $\psi$,
+In a typical autoencoder, when there is one hidden layer, the encoder stage of an autoencoder maps \(x\in \mathbb{R}^{d}=\mathcal{X}\) to \(z\in \mathbb{R}^{p}=\mathcal{F}\) ($z$ is hidden layer, for this simplest case, it is also the mid-layer of the whole autoencoder). The encoder \(E(\cdot)\) and the decoder \(D(\cdot)\) can be defined as transitions $\phi$ and $\psi$. An autoencoder $\mathcal{AE}$ can be written in the following form:
 \begin{equation}
 \begin{split}
 & \phi:\mathcal{X}\to\mathcal{F} \\
 & \psi:\mathcal{F}\to\mathcal{X} \\
-& \phi,\psi=\operatorname*{argmin}_{\phi,\psi} \norm{X-(\phi \circ \psi)X}^2
+& \mathcal{AE}=\operatorname*{argmin}_{\phi,\psi} \norm{X-\psi(\phi(X))}^2
 \end{split}
 \end{equation}
-This can be written as
+The encoder stage of the autoencoder maps $x$ to a mid-layer $z$ (usually in lower dimension):
 \begin{equation}
 z=\sigma(Wx+b)
 \end{equation}
@@ -280,22 +280,19 @@ Kernel methods owe their name to the use of kernel functions, which enable them 
 \subsection{Positive Definite Kernel}
 A positive definite kernel is a generalization of a positive definite function or a positive definite matrix. It makes sure there is a corresponding inner product space for $x$ and $y$. Its greatest advantage is that positive definite kernels can be defined on every set. Therefore it can be applied to data of any type.
 
-The computation for kernel function $K$ is made much simpler if the kernel can be written in the form of a "feature map" $\varphi:\mathcal{X}\to\mathcal{V}$ which satisfies $K(x,x')=\langle \varphi (x), \varphi (x') \rangle \mathcal{V}$. However, the key restriction is that $\langle \cdot, \cdot \rangle \mathcal{V}$ must be a proper inner product. While some problems in machine learning do require an explicit representation for $\varphi$, $\varphi$ is not necessary as long as $\mathcal{V}$ is an inner product space\cite{PD}.
-
-In KPCA or KCCA, a kernel function maps data from original space to an inner product space RKHS to ensure both the existence of an inner product and the evaluation of every function in this space at every point in the domain. From the definition of RKHS, the corresponding kernel function should be both symmetric and positive definite\cite{RKHS}.
-
-\subsection{Mercer's Theorem}
-To explore a kernel function $K$ without the explicit representation for $\varphi$, we apply Mercer's theorem: an implicitly defined function $\varphi$ exists whenever space $\mathcal {X}$ can be equipped with a suitable measure ensuring the function $K$ satisfies Mercer's condition.
-
-In mathematics, specifically functional analysis, Mercer's theorem is a representation of a symmetric positive definite function on a square as a sum of a convergent sequence of product functions\cite{MT}. A kernel, in this context, is a symmetric continuous function
+\textbf{Definition.}\cite{MT} A kernel is a symmetric continuous function
 \begin{equation}
 K:[a,b] \times [a,b] \rightarrow \mathbb {R}
 \end{equation}
 where symmetric means that \( K(x, s) = K(s, x)\).
-K is said to be non-negative definite (or positive semidefinite) if and only if
+K is said to be positive definite if and only if
 \begin{equation}
-\sum _{i=1}^{n}\sum _{j=1}^{n}K(x_{i},x_{j})c_{i}c_{j}\geq 0
+\sum _{i=1}^{n}\sum _{j=1}^{n}K(x_{i},x_{j})c_{i}c_{j} > 0
 \end{equation}
+
+The computation for kernel function $K$ is made much simpler if the kernel can be written in the form of a "feature map" $\varphi:\mathcal{X}\to\mathcal{V}$ which satisfies $K(x,x')=\langle \varphi (x), \varphi (x') \rangle \mathcal{V}$. However, the key restriction is that $\langle \cdot, \cdot \rangle \mathcal{V}$ must be a proper inner product. While some problems in machine learning do require an explicit representation for $\varphi$, $\varphi$ is not necessary as long as $\mathcal{V}$ is an inner product space\cite{PD}.
+
+In KPCA or KCCA, a kernel function maps data from original space to an inner product space RKHS to ensure both the existence of an inner product and the evaluation of every function in this space at every point in the domain. From the definition of RKHS, the corresponding kernel function should be both symmetric and positive definite\cite{RKHS}.
 
 \subsection{Schoenberg's Theroem}
 Suppose a kernel function $K$ is not positive definite, it may not represent an inner product in any Hilbert space. Here is one way to see. A kernel $K$ is positive definite if and only if for all samples of n points, its corresponding kernel matrix $\mathcal{K}$ is a positive definite matrix. With a positive definite $\mathcal{K}$, by Cholesky decompose $\mathcal{K}=LL^T$, each row of $L$ is one mapped point in the inner product space. If $K$ is not positive definite, the matrix $\mathcal{K}$ may also not be positive definite. Consequently, Cholesky does not work and there is no corresponding inner product space. 
