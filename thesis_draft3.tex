@@ -205,7 +205,7 @@ In a typical autoencoder, when there is one hidden layer, the encoder stage of a
 \begin{split}
 & \phi:\mathcal{X}\to\mathcal{F} \\
 & \psi:\mathcal{F}\to\mathcal{X} \\
-& \mathcal{AE}_{\phi,\psi}=\operatorname*{argmin}_{\phi,\psi} \norm{X-\psi(\phi(X))}^2
+& \mathcal{AE}_{\phi,\psi}=\operatorname*{argmin}_{\phi,\psi} \norm{X-\psi(\phi(X))}^2_F
 \end{split}
 \end{equation}
 The encoder stage of the autoencoder maps $x$ to a mid-layer $z$ (usually in lower dimension):
@@ -352,9 +352,9 @@ Z_{1} = \alpha_{11}X_{1} + \alpha_{21}X_{2} +...+ \alpha_{p1}X_{p}
 \end{equation}
 that has the largest variance. The first principal component vector $z_1$ solves the following optimization problem:
 \begin{equation}
-\operatorname*{maximize}_{\alpha_{11},...,\alpha_{p1}}\dfrac{1}{n}\sum_{i=1}^{n}(\sum_{j=1}^{p}\alpha_{j1}x_{ij})^2 \ subject \ to \ \sum_{j=1}^{p}\alpha_{j1}^2=1
+\operatorname*{minimize}_{D^{'}} \norm{D-D^{'}}_F \ subject \ to \ rank(D^{'})\leq r
 \end{equation}
-This can be solved via an eigen decomposition, a standard technique in linear algebra.
+where D is data matrix and r is an desired rank. This can be solved via an eigen decomposition, a standard technique in linear algebra.
 
 After the first principal component \(Z_{1}\) of the features has been determined, we can find the second principal component \(Z_{2}\). The second principal component is the linear combination of \(X = (X_{1}, X_{2},..., X_{p})\) that has maximal variance out of all linear combinations that are uncorrelated with \(Z_{1}\). The third principal component is the linear combination of \(X = (X_{1}, X_{2},..., X_{p})\) that has maximal variance out of all linear combinations that are uncorrelated with \(Z_{1}\) and \(Z_{2}\). So on and so forth. 
 
@@ -592,6 +592,7 @@ To maximize the non-linear coherence of the input pair of data, we set non-linea
 \begin{equation}
 L=det(I-\Sigma\Sigma^T)=\prod_{i=1}^{m}(1-\sigma_i^2);0 \geq L \geq 1
 \end{equation}
+
 \begin{equation}
 L=\frac{det(R_{zz})}
 {det(R_{z_{x}z_{x}})det(R_{z_{y}z_{y}})}=\frac{det\left(\begin{bmatrix}
@@ -607,16 +608,18 @@ H=1-L=1-\frac{det\left(\begin{bmatrix}
 	\end{bmatrix}\right)}
 {det(R_{z_{x}z_{x}})det(R_{z_{y}z_{y}})}
 \end{equation}
+
 One problem of the above formulas is that they are sensitive to high-dimensional space. If one \(\sigma_i\) is large, the result of dependence formula tends to 0 and coherence tends to 1. As a result, the coherence between $z_x$ and $z_y$ tends to small if any $z_x$ is predictable for any $z_y$ or any $z_y$ is predictable for any $z_x$. On the other hand, the high-dimensional covariance matrix can be close to singular and makes it difficult to compute determinant, as is required by using a coherence metric. Here we propose a novel element-wise modification to the calculation of dependence and coherence to avoid above issues:
 \begin{equation}
 L_{i,j}=\frac{det\left(\begin{bmatrix}
 	R_{z_{x,i}z_{x,i}} & R_{z_{x,i}z_{y,j}} \\
 	R_{z_{y,j}z_{x,i}} & R_{z_{y,j}z_{y,j}}
 	\end{bmatrix}\right)}
-{det(R_{z_{x}z_{x}})det(R_{z_{y}z_{y}})}=
+{det(R_{z_{x,i}z_{x,i}})det(R_{z_{y,j}z_{y,j}})}=
 \frac{R_{z_{x,i}z_{x,i}}R_{z_{y,j}z_{y,j}}-R_{z_{x,i}z_{y,j}}R_{z_{y,j}z_{x,i}}}
 {R_{z_{x}z_{x}}R_{z_{y}z_{y}}}
 \end{equation}
+
 \(L_{i,j}\) represents the element-wise dependence between $z_{x,i}$ and $z_{y,j}$. Now we have
 \begin{equation}
 L=\frac{\sum_{i,j=1}^{k}(L_{i,j})^2}{n^2}
