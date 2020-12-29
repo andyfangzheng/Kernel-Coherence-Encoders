@@ -1,2 +1,2 @@
-# DS-MS-Thesis
-This is a writing draft for Thesis paper of Data Science Master's program
+# Kernel Coherence Encoder
+This is a writing draft for my Thesis paper of Data Science Master's program at WPI
